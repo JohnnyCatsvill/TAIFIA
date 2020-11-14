@@ -1,11 +1,3 @@
-,S,NUM,chetn
-0,chetn,NUM/chetn,
-1,NUM,NUM,
-2,NUM/chetn,NUM/chetn,
-3,NUM,NUM,
-4,NUM/chetn,NUM/chetn,
-5,NUM,NUM,
-6,NUM/chetn,NUM/chetn,
-7,NUM,NUM,
-8,NUM/chetn,NUM/chetn,
-9,NUM,NUM,
+,H,S,A
+0,A,,S/A
+1,,A,
