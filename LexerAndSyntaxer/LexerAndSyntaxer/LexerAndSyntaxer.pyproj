@@ -11,6 +11,10 @@
     <OutputPath>.</OutputPath>
     <Name>LexerAndSyntaxer</Name>
     <RootNamespace>LexerAndSyntaxer</RootNamespace>
+    <TestFramework>unittest</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>
+    </UnitTestRootDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,8 +28,17 @@
     <Compile Include="LexerAndSyntaxer.py" />
     <Compile Include="Lexer\Constants.py" />
     <Compile Include="Lexer\Lexer.py" />
+    <Compile Include="test_lexer.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Syntaxer\SyntaxAnalyzer.py" />
     <Compile Include="Syntaxer\TablePrinter.py" />
+    <Compile Include="test_syntaxer.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test_merge.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Lexer\" />

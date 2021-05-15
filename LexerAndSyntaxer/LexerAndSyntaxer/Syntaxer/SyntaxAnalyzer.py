@@ -275,6 +275,26 @@ def CreateTable(rules):
             
     return new_table
 
+def SortRules(table):
+    new_table = copy.deepcopy(table)
+
+    old_rule = new_table[0]
+    old_rule_pos = -1
+
+    for rule_pack_num in range(len(new_table)):
+        old_rule_pos = old_rule_pos + 1
+        if old_rule[0] != new_table[rule_pack_num][0]:
+
+            for other_pack_num in range(old_rule_pos, len(new_table)):
+                if new_table[other_pack_num][0] == old_rule[0]:
+                    new_table.insert(old_rule_pos, new_table[other_pack_num])
+                    new_table.pop(other_pack_num + 1)
+                    
+            
+        old_rule = new_table[rule_pack_num]
+
+    return new_table
+
 class Runner_cl:
     
     def __init__(self, first_instance, table, end_symbol):
@@ -324,27 +344,6 @@ class Runner_cl:
 
             if self.current_pos == "NULL":
                 self.current_pos = self.pos_stack.pop()
-
-
-def SortRules(table):
-    new_table = copy.deepcopy(table)
-
-    old_rule = new_table[0]
-    old_rule_pos = -1
-
-    for rule_pack_num in range(len(new_table)):
-        old_rule_pos = old_rule_pos + 1
-        if old_rule[0] != new_table[rule_pack_num][0]:
-
-            for other_pack_num in range(old_rule_pos, len(new_table)):
-                if new_table[other_pack_num][0] == old_rule[0]:
-                    new_table.insert(old_rule_pos, new_table[other_pack_num])
-                    new_table.pop(other_pack_num + 1)
-                    
-            
-        old_rule = new_table[rule_pack_num]
-
-    return new_table
 
 
 
