@@ -26,12 +26,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="LexerAndSyntaxer.py" />
-    <Compile Include="test_lexer.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="test_syntaxer.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="test_merge.py">
       <SubType>Code</SubType>
     </Compile>
@@ -42,8 +36,8 @@
       <Project>{ced68baf-b7b0-49ad-ba3b-087add963ab6}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\LL0\LL0\LL0.pyproj">
-      <Name>LL0</Name>
+    <ProjectReference Include="..\..\LL1\LL1\LL1.pyproj">
+      <Name>LL1</Name>
       <Project>{bca2021c-d7c4-4fa7-9bf7-f6011d8222fd}</Project>
       <Private>True</Private>
     </ProjectReference>

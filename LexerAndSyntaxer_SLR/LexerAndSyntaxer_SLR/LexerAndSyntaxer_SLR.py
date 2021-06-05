@@ -39,7 +39,7 @@ void main()
     
     while(i < 10) //cycle
     {
-        i = i + 1;
+        i = ((-i) + (1));
     }
 }
 
@@ -47,7 +47,7 @@ void main()
 
 lex = Lexer(program_text)
 lex.run(show_states = False, show_spaces = False)
-lex.show()
+#lex.show()
 
 
 rules = [
@@ -87,8 +87,10 @@ rules = [
     ["ANY_NUMBER", ["ID"]],
 
     ["EXPRESSION", ["EXPRESSION math_symbol EXPRESSION"]],
-    ["EXPRESSION", ["bracket_smooth_l EXPRESSION bracket_smooth_r math_symbol bracket_smooth_l EXPRESSION bracket_smooth_r"]],
-    ["EXPRESSION", ["ANY_NUMBER"]]  
+    ["EXPRESSION", ["bracket_smooth_l EXPRESSION bracket_smooth_r"]],
+    #["EXPRESSION", ["bracket_smooth_l EXPRESSION bracket_smooth_r math_symbol bracket_smooth_l EXPRESSION bracket_smooth_r"]],
+    ["EXPRESSION", ["ANY_NUMBER"]],
+    ["EXPRESSION", ["math_symbol ANY_NUMBER"]]  
 ]
 
 table = SLR_Table(rules)

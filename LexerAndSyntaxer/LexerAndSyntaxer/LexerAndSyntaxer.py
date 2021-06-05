@@ -1,5 +1,5 @@
 from Lexer import Lexer
-from LL0 import Run, Runner_cl
+from LL1 import Run, Runner_cl
 
 program_text = """
 
