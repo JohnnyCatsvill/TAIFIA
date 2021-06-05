@@ -1,4 +1,4 @@
-from Lexer.Constants import *
+from Constants import *
 
 class Lexer(object):
     

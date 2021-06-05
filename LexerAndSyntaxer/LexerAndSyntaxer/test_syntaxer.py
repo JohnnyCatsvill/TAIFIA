@@ -1,5 +1,5 @@
 import unittest
-from Syntaxer.SyntaxAnalyzer import *
+from LL0 import *
 
 class Test_UniformRules(unittest.TestCase):
 

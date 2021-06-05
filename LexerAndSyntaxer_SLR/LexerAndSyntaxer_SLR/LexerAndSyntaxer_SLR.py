@@ -1,5 +1,7 @@
+
 from Lexer import Lexer
-from LL0 import Run, Runner_cl
+from SLR1 import SLR_Table
+from Runner import Runner
 
 program_text = """
 
@@ -77,24 +79,21 @@ rules = [
     
     ["COMMAND", ["cycle bracket_smooth_l CONDITION_LIST bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
 
-    ["ANY_NUMBER", ["INT", "OCT", "HEX", "BIN", "FLOAT", "ID"]],
+    ["ANY_NUMBER", ["INT"]],
+    ["ANY_NUMBER", ["OCT"]],
+    ["ANY_NUMBER", ["HEX"]],
+    ["ANY_NUMBER", ["BIN"]],
+    ["ANY_NUMBER", ["FLOAT"]],
+    ["ANY_NUMBER", ["ID"]],
+
     ["EXPRESSION", ["EXPRESSION math_symbol EXPRESSION"]],
     ["EXPRESSION", ["bracket_smooth_l EXPRESSION bracket_smooth_r math_symbol bracket_smooth_l EXPRESSION bracket_smooth_r"]],
-    ["EXPRESSION", ["ANY_NUMBER"]]
-
-    
+    ["EXPRESSION", ["ANY_NUMBER"]]  
 ]
 
-table = Run(rules, lr_letter="LevRecur", ft_letter="Factor", word = "", show_all = False)
+table = SLR_Table(rules)
 
-runner = Runner_cl(1, table, "$")
+lexer_list = [i for i in lex.list if i[1] != "new_line" and i[1] != "Comment"]
+lexer_list.append(["true_end", "$", "end_end"])
 
-for i in lex.list:
-    if i[1] != "new_line" and i[1] != "Comment":
-        runner.Run(i[1], i[2])
-
-is_end = runner.Run("$", "end_end")
-if is_end:
-    print("EVERYTHING IS FINE, BUT MY MENTAL HEALTH")
-else:
-    print("WERE F**CKED")
+Runner(table, lexer_list, rules)

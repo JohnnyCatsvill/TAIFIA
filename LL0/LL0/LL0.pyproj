@@ -2,19 +2,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>538d14a0-7efb-4c07-a55f-af4c268064d1</ProjectGuid>
+    <ProjectGuid>bca2021c-d7c4-4fa7-9bf7-f6011d8222fd</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>LexerAndSyntaxer.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>LexerAndSyntaxer</Name>
-    <RootNamespace>LexerAndSyntaxer</RootNamespace>
-    <TestFramework>unittest</TestFramework>
-    <UnitTestPattern>test*.py</UnitTestPattern>
-    <UnitTestRootDirectory>
-    </UnitTestRootDirectory>
+    <Name>LL0</Name>
+    <RootNamespace>LL0</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,28 +22,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="LexerAndSyntaxer.py" />
-    <Compile Include="test_lexer.py">
+    <Compile Include="LL0.py" />
+    <Compile Include="main.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="test_syntaxer.py">
+    <Compile Include="TablePrinter.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="test_merge.py">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Lexer\Lexer\Lexer.pyproj">
-      <Name>Lexer</Name>
-      <Project>{ced68baf-b7b0-49ad-ba3b-087add963ab6}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\LL0\LL0\LL0.pyproj">
-      <Name>LL0</Name>
-      <Project>{bca2021c-d7c4-4fa7-9bf7-f6011d8222fd}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

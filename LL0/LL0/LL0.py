@@ -1,5 +1,5 @@
 
-from Syntaxer.TablePrinter import Print_2D_Table
+from TablePrinter import Print_2D_Table
 import copy
 
 def UniformRules(unfixed_rules):
@@ -345,59 +345,6 @@ class Runner_cl:
             if self.current_pos == "NULL":
                 self.current_pos = self.pos_stack.pop()
 
-
-
-#def Runner(first_instance, table, end_symbol, word):
-#
-#    word_stack = ParseRule(word)
-#    pos_stack = [first_instance]
-#    is_end = False
-#
-#    while pos_stack != []:
-#        current_pos = pos_stack.pop()
-#
-#        while current_pos != "NULL":
-#            our_line = table[current_pos]
-#            letter = our_line[1]
-#            guides = our_line[2]
-#            go_to = our_line[3]
-#            error = our_line[4]
-#            read = our_line[5]
-#            stack = our_line[6]
-#            end = our_line[7]
-#            cur_letter = word_stack[0]
-#
-#            if cur_letter in guides:
-#                if read:
-#                    word_stack.pop(0)
-#                if stack:
-#                    pos_stack.append(current_pos + 1)
-#
-#                is_end = True if end else False
-#
-#                current_pos = table[current_pos][3]
-#
-#                print("We are now at {} position".format(current_pos))
-#
-#            elif table[current_pos][4]: #ERR?
-#                current_pos = current_pos + 1
-#                print("Jump when dealed with errors, to {} position".format(current_pos))
-#            
-#            else:
-#                print("There are trouble happen, '{}' letter was given, when '{}' were only possible".format(cur_letter, guides))
-#                exit(0)
-#
-#    if (pos_stack == []):
-#        print("stack - empty")
-#    if (is_end):
-#        print("symbol - end")
-#    if (word_stack == []):
-#        print("word - fully readen")
-#
-#    print()
-#    if pos_stack == [] and is_end and word_stack == []:
-#        print("EVERYTHING IS FINE, BUT MY MENTAL HEALTH")
-    
 
 
 def Run(rules, lr_letter, ft_letter, word = "", show_all = False):

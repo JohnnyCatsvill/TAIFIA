@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "LexerAndSyntaxer", "LexerAndSyntaxer\LexerAndSyntaxer.pyproj", "{538D14A0-7EFB-4C07-A55F-AF4C268064D1}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Lexer", "..\Lexer\Lexer\Lexer.pyproj", "{CED68BAF-B7B0-49AD-BA3B-087ADD963AB6}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "LL0", "..\LL0\LL0\LL0.pyproj", "{BCA2021C-D7C4-4FA7-9BF7-F6011D8222FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +17,10 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{538D14A0-7EFB-4C07-A55F-AF4C268064D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{538D14A0-7EFB-4C07-A55F-AF4C268064D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CED68BAF-B7B0-49AD-BA3B-087ADD963AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CED68BAF-B7B0-49AD-BA3B-087ADD963AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCA2021C-D7C4-4FA7-9BF7-F6011D8222FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCA2021C-D7C4-4FA7-9BF7-F6011D8222FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
