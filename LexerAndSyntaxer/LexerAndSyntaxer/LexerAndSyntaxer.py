@@ -28,11 +28,21 @@ void main()
     {
         i = 5;
     }
+
     else /* I want multicomment here
     and noone can stop me 
     do this */
     {
         i = 6;
+    }
+
+    if (i == 5)
+    {
+        i = 2 + 3 + 28 + 2.85;
+    }
+    else
+    {
+        i = 2;
     }
     
     while(i < 10) //cycle
@@ -43,9 +53,6 @@ void main()
 
 """
 
-lex = Lexer(program_text)
-lex.run(show_states = False, show_spaces = False)
-lex.show()
 
 
 rules = [
@@ -55,46 +62,66 @@ rules = [
     ["LIST_OF_COMMANDS", ["COMMAND"]],
     
     ["COMMAND", ["type ID divider"]],
-    
     ["COMMAND", ["reader bracket_smooth_l ID bracket_smooth_r divider"]],
     ["COMMAND", ["printer bracket_smooth_l ID bracket_smooth_r divider"]],
-
     ["COMMAND", ["ID assign EXPRESSION divider"]],
+    ["COMMAND", ["condition bracket_smooth_l CONDITION bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
+    ["COMMAND", ["condition bracket_smooth_l CONDITION bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r condition_else bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
+    ["COMMAND", ["cycle bracket_smooth_l CONDITION bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
     
-    ["COMMAND", ["condition bracket_smooth_l CONDITION_LIST bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
-    ["COMMAND", ["condition bracket_smooth_l CONDITION_LIST bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r condition_else bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
-    
-    ["CONDITION_LIST", ["bracket_smooth_l CONDITION_LIST bracket_smooth_r binary_bool bracket_smooth_l CONDITION_LIST bracket_smooth_r"]],
-    ["CONDITION_LIST", ["CONDITION_LIST binary_bool CONDITION_LIST"]],
-    ["CONDITION_LIST", ["unary_bool CONDITION_LIST"]],
-    ["CONDITION_LIST", ["unary_bool bracket_smooth_l CONDITION_LIST bracket_smooth_r"]],
-    ["CONDITION_LIST", ["ID"]],
-    ["CONDITION_LIST", ["INT"]],
-    ["CONDITION_LIST", ["OCT"]],
-    ["CONDITION_LIST", ["HEX"]],
-    ["CONDITION_LIST", ["BIN"]],
-    ["CONDITION_LIST", ["FLOAT"]],
-    
-    ["COMMAND", ["cycle bracket_smooth_l CONDITION_LIST bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
+    ["ANY_NUMBER", ["OCT"]],
+    ["ANY_NUMBER", ["HEX"]],
+    ["ANY_NUMBER", ["BIN"]],
+    ["ANY_NUMBER", ["FLOAT"]],
+    ["ANY_NUMBER", ["ID"]],
+    ["ANY_NUMBER", ["INT"]],
 
-    ["ANY_NUMBER", ["INT", "OCT", "HEX", "BIN", "FLOAT", "ID"]],
-    ["EXPRESSION", ["EXPRESSION math_symbol EXPRESSION"]],
-    ["EXPRESSION", ["bracket_smooth_l EXPRESSION bracket_smooth_r math_symbol bracket_smooth_l EXPRESSION bracket_smooth_r"]],
-    ["EXPRESSION", ["ANY_NUMBER"]]
+    ["BINARY_PLUS_MINUS", ["plus_symbol", "minus_symbol"]],
 
-    
+    ["EXPRESSION", ["EXPRESSION plus_symbol EXPRESSION2"]],
+    ["EXPRESSION", ["EXPRESSION2"]],
+
+    ["EXPRESSION2", ["EXPRESSION2 multiply_symbol EXPRESSION3"]],
+    ["EXPRESSION2", ["EXPRESSION2 divide_symbol EXPRESSION3"]],
+    ["EXPRESSION2", ["EXPRESSION3"]],
+
+    ["EXPRESSION3", ["bracket_smooth_l EXPRESSION bracket_smooth_r"]],
+    ["EXPRESSION3", ["minus_symbol EXPRESSION3"]],
+    ["EXPRESSION3", ["ANY_NUMBER"]],
+
+    ["CONDITION", ["CONDITION binary_or CONDITION2"]],
+    ["CONDITION", ["CONDITION2"]],
+
+    ["CONDITION2", ["CONDITION2 binary_and CONDITION3"]],
+    ["CONDITION2", ["CONDITION3"]],
+
+    ["CONDITION3", ["bracket_smooth_l CONDITION bracket_smooth_r"]],
+    ["CONDITION3", ["unary_not CONDITION3"]],
+    ["CONDITION3", ["boolean_true"]],
+    ["CONDITION3", ["boolean_false"]],
+    ["CONDITION3", ["ANY_NUMBER binary_compare ANY_NUMBER"]]
 ]
 
-table = Run(rules, lr_letter="LevRecur", ft_letter="Factor", word = "", show_all = False)
+try:
+    lex = Lexer(program_text)
+    lex.run(show_states = False, show_spaces = False)
+    lex.show()
 
-runner = Runner_cl(1, table, "$")
+    table = Run(rules, lr_letter="LR", ft_letter="FR", word = "", show_all = False)
+    
+    runner = Runner_cl(1, table, "$")
+    
+    for i in lex.list:
+        if i[1] != "new_line" and i[1] != "Comment":
+            runner.Run(i[1], i[2])
+            print(runner.pos_stack)
+    
+    is_end = runner.Run("$", "end_end")
+    if not is_end:
+        raise Exception("Промахнулись с концом", runner.current_pos, runner.pos_stack)
 
-for i in lex.list:
-    if i[1] != "new_line" and i[1] != "Comment":
-        runner.Run(i[1], i[2])
-
-is_end = runner.Run("$", "end_end")
-if is_end:
-    print("EVERYTHING IS FINE, BUT MY MENTAL HEALTH")
+except Exception as e:
+    print("Не подходит")
+    print(e)
 else:
-    print("WERE F**CKED")
+    print("Подходит")

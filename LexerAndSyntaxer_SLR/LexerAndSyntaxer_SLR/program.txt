@@ -1,8 +1,3 @@
-
-from Lexer import *
-
-program_text = """
-
 void main()
 {
     int i;    //init
@@ -35,15 +30,13 @@ void main()
         i = 6;
     }
     
-    while(i < 10 && (i < 2 || i == 1)) //cycle
+    while(i < 10 && (i < 2 || i == 1) && True) //cycle
     {
-        i = -i + 1;
+        if(1 == 1)
+        {
+            i = 1;
+        }
+        i = -i +-(id*3.5)+ id+id;
         i = 25;
     }
 }
-
-"""
-
-lex = Lexer(program_text)
-lex.run(show_states = False, show_spaces = False)
-lex.show()

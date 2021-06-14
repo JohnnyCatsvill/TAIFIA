@@ -2,6 +2,10 @@
 from TablePrinter import Print_2D_Table
 import copy
 
+def ParseRule(rule, divider = " "):
+    rule_list = rule.split(divider)
+    return rule_list
+
 def UniformRules(unfixed_rules):
     # просто задать более укомплектованный вид правилам, более легкие в обращении
     new_rules = []
@@ -41,7 +45,7 @@ def RemoveLeftRecursion(unfixed_rules, new_letter):
         
         for rule in rule_pack[1]: #поиск рекурсии
             
-            if rule.find(current_nonterminal) == 0:
+            if current_nonterminal in ParseRule(rule):
                 recursive_rules.append(rule)
             else:
                 non_recursive_rules.append(rule)
@@ -50,11 +54,11 @@ def RemoveLeftRecursion(unfixed_rules, new_letter):
             if len(recursive_rules) > 0: #проверка на рекурсию
                 
                 for j in non_recursive_rules:
-                    new_rules.append([current_nonterminal, [j + " " + NEW_LETTER_START + str(new_letter_num)]])
+                    new_rules.append([current_nonterminal, [j + " " + current_nonterminal + "_" + NEW_LETTER_START + str(new_letter_num)]])
                 
                 for j in recursive_rules:
-                    new_rules.append([NEW_LETTER_START + str(new_letter_num), [j.replace(current_nonterminal, "", 1).replace(" ", "", 1) + " " + NEW_LETTER_START + str(new_letter_num)]])
-                new_rules.append([NEW_LETTER_START + str(new_letter_num), ["e"]])
+                    new_rules.append([current_nonterminal + "_" + NEW_LETTER_START + str(new_letter_num), [j.replace(current_nonterminal, "", 1).replace(" ", "", 1) + " " + current_nonterminal + "_" + NEW_LETTER_START + str(new_letter_num)]])
+                new_rules.append([current_nonterminal + "_" + NEW_LETTER_START + str(new_letter_num), ["e"]])
                 
                 
             
@@ -62,7 +66,7 @@ def RemoveLeftRecursion(unfixed_rules, new_letter):
                 new_rules.append([current_nonterminal, non_recursive_rules])
             
         else:
-            print("There are unstoppable left recursion in the RULE")
+            raise Exception("UnstoppableLeftRecursion", "Unstoppable left recursion -> {} caused it".format(rule_pack))
             
         new_letter_num = new_letter_num + 1
         
@@ -81,8 +85,9 @@ def AddFactorization(unfixed_rules, new_letter):
     
     # узнать какую букву следует заюзать в этот раз
     for i in copy_of_old_rules:
-        if i[0].startswith(NEW_LETTER_START):
-            new_letter_num = max(new_letter_num, int(i[0][len(NEW_LETTER_START):])+1)
+        current_nonterminal = i[0]
+        if i[0].startswith(current_nonterminal + "_" + NEW_LETTER_START):
+            new_letter_num = max(new_letter_num, int(i[0][len(current_nonterminal + "_" + NEW_LETTER_START):])+1)
 
     # берем из унифицированных правил (так проще)
     for rule_pack in copy_of_old_rules:
@@ -108,9 +113,9 @@ def AddFactorization(unfixed_rules, new_letter):
             minimal_rule_chunk_string = " ".join(minimal_rule_chunk)
 
             if len(simmilar_rules) > 1:
-                new_rules.append([current_nonterminal, [minimal_rule_chunk_string + " " + NEW_LETTER_START + str(new_letter_num)]])
+                new_rules.append([current_nonterminal, [minimal_rule_chunk_string + " " + current_nonterminal + "_" + NEW_LETTER_START + str(new_letter_num)]])
                 for rule in simmilar_rules:
-                    new_rules.append([NEW_LETTER_START + str(new_letter_num), [rule.replace(minimal_rule_chunk_string, "", 1).replace(" ", "", 1) if rule.replace(minimal_rule_chunk_string, "", 1) != "" else "e"]])
+                    new_rules.append([current_nonterminal + "_" + NEW_LETTER_START + str(new_letter_num), [rule.replace(minimal_rule_chunk_string, "", 1).replace(" ", "", 1) if rule.replace(minimal_rule_chunk_string, "", 1) != "" else "e"]])
                     rule_pack[1].remove(rule)
                     
                 new_letter_num = new_letter_num + 1
@@ -175,6 +180,7 @@ def AddGuides(rules):
                 letters_that_could_end_with_e = [current_nonterm]
 
                 for looking_letter in letters_that_could_end_with_e:
+                    #print("Идем по {} букве".format(looking_letter))
                     # идем искать букву во всех правилах которая следует после е
                     for pack in copy_of_rules:
                         parsed_rule = ParseRule(pack[1][0])
@@ -196,6 +202,10 @@ def AddGuides(rules):
                                             # у нас нетерминал оказался неготовый... ждем...
                                             if parsed_rule[pos + 1] != current_nonterm:
                                                 nonterminals_readyness[current_nonterm] = 0
+                                            for i in copy_of_rules: 
+                                                if i[0] == parsed_rule[pos + 1]:
+                                                    for symbol in i[2]:
+                                                        rule_pack[2].add(symbol)
                                     else:
                                         # у нас попался терминал
                                         rule_pack[2].add(parsed_rule[pos + 1])
@@ -207,7 +217,17 @@ def AddGuides(rules):
                                     letters_that_could_end_with_e.append(pack[0])
     
     return copy_of_rules
-    
+
+def CheckIsItLL(rules):
+
+    alreadyTakenGuides = dict()
+    for rule_pack in rules:
+        for guide in rule_pack[2]:
+            for other_rule_pack in rules:
+                if rule_pack != other_rule_pack and rule_pack[0] == other_rule_pack[0]:
+                    for other_guide in other_rule_pack[2]:
+                        if guide == other_guide:
+                            raise Exception("Not LL: \n\n {0} nonterm conflict on \n\n {1} \n {2} \n \n and \n \n {3} \n {4}".format(rule_pack[0], rule_pack[1], rule_pack[2], other_rule_pack[1], other_rule_pack[2]))
     
 def CreateTable(rules):
     set_of_nonterminals = set([rule_pack[0] for rule_pack in rules])
@@ -329,18 +349,19 @@ class Runner_cl:
 
                     self.current_pos = go_to
 
-                    print("We are now at {} position".format(self.current_pos))
+                    #print("We are now at {} position".format(self.current_pos))
 
                     if read:
                         return(self.pos_stack == [1] and self.is_end)
 
                 elif error == "False": #ERR?
                     self.current_pos = self.current_pos + 1
-                    print("Jump when dealed with errors, to {} position".format(self.current_pos))
+                    #print("Jump when dealed with errors, to {} position".format(self.current_pos))
                 
                 else:
-                    print("There are trouble happen, '{}' letter was given, when '{}' were only possible at {}".format(new_letter, guides, pos))
-                    exit(0)
+                    #print("There are trouble happen, '{}' letter was given, when '{}' were only possible at {}".format(new_letter, guides, pos))
+                    raise Exception("UnexpectedSymbol", "'{}' letter was given, when '{}' were only possible at {}".format(new_letter, guides, pos))
+                    #exit(0)
 
             if self.current_pos == "NULL":
                 self.current_pos = self.pos_stack.pop()
@@ -365,6 +386,8 @@ def Run(rules, lr_letter, ft_letter, word = "", show_all = False):
     guides_added = AddGuides(new_factorization)
     if show_all: 
         Print_2D_Table(guides_added)
+
+    CheckIsItLL(guides_added)
 
     sorted_table = SortRules(guides_added)
     if show_all: 

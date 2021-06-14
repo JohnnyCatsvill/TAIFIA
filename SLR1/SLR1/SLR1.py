@@ -276,7 +276,27 @@ def SLR_Table(rules):
     
     #Print_2D_Table(slr_table)
     #print(slr_table)
-    return slr_table       
+    return slr_table
+
+def CheckIfItSLR(slr_table):
+    for row_num in range(1, len(slr_table)):
+        row = slr_table[row_num]
+        for cell in row[1:]:
+            if len(cell) >= 2:
+                sdvig = False
+                svertka = False
+
+                for cell_elem in cell:
+                    if len(ParseRule(cell_elem)) == 2:
+                        if svertka == False:
+                            svertka = True
+                        else:
+                            raise Exception("Non SLR Grammar \n \n {} in {}th pos {} nonterm".format(cell, row_num, row[0]))
+                    else:
+                        sdvig = True
+
+                if sdvig and svertka:
+                    raise Exception("Non SLR Grammar \n \n {} in {}th pos {} nonterm".format(cell, row_num, row[0]))
 
 def Runner(slr_table, input, rules):
 

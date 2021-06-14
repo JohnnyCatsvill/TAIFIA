@@ -24,8 +24,9 @@ def Runner(slr_table, input_mass, rules):
                 for cell_num in range(1, len(slr_table[0])):
                     if slr_table[0][cell_num] == input_stack[-1][1]:
                         if row[cell_num] == []:
-                            print(input_stack[-1][0] + " " + input_stack[-1][2] + " неожиданный символ")
-                            exit(0)
+                            #print(input_stack[-1][0] + " " + input_stack[-1][1] + " " + input_stack[-1][2] + " неожиданный символ")
+                            raise Exception("Unexpected symbol", "символ {} попался вне контекста текущих символов".format(input_stack[-1]))
+                            
                         else:
                             
                             if len(row[cell_num]) > 1:
@@ -45,14 +46,17 @@ def Runner(slr_table, input_mass, rules):
                         cell_num = cell_num - 1
                         break
                 if cell_num + 1 == len(slr_table[0]):
-                    print("НЕ ПОДХОДИТ, следующего символа нет в таблице")
-                    exit(0)
+                    raise Exception("Unexpected symbol", "символ {} не из текущей грамматики".format(input_stack[-1]))
+                    #print("НЕ ПОДХОДИТ, {} символа нет в таблице".format(input_stack[-1]))
+                    #exit(0)
                 break
         #print()
-    print("разбор  INPUT-", input_stack, "\n  RIGHT-" , right_stack, "\n  LEFT-", left_stack, "\n")
+    
 
-
-    if left_stack == [['true_end', rules[0][0], 'end_end']] and input_stack == [['true_end', END_SYMBOL, 'end_end']]:
-        print("ПОДХОДИТ")
+    if left_stack == [['true_end', rules[0][0], 'end_end']] and input_stack == [['true_end', END_SYMBOL, 'end_end']] and right_stack == [rules[0][0], "OK"]:
+        #print("ПОДХОДИТ")
+        return True
     else:
-        print("НЕ ПОДХОДИТ")
+        raise Exception("Non empty stack", "какие-то символы были упущены, вот стек: \n \n input: {} \n \n left: {} \n \n right: {}".format(input_stack, right_stack, left_stack))
+        #print("разбор  INPUT-", input_stack, "\n  RIGHT-" , right_stack, "\n  LEFT-", left_stack, "\n")
+        

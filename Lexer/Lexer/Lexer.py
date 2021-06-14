@@ -13,6 +13,7 @@ class Lexer(object):
             if symbol in STOP_POINTS:
                 self.list.append([word[0], WORD_TO_TYPE_DELIMER + ERROR_NAME, ROW_NAME + str(row) + ROW_COL_DIVIDER_NAME + COLUMN_NAME + str(column)])
                 word[0] = ""
+                raise Exception("Lexer's unexpected symbol", "{}".format(self.list[-1]))
                 return state_start(symbol, word, row, column)
             else:
                 return state_error
@@ -195,6 +196,36 @@ class Lexer(object):
                 self.list.append([word[0], WORD_TO_TYPE_DELIMER + DEC_NAME, ROW_NAME + str(row) + ROW_COL_DIVIDER_NAME + COLUMN_NAME + str(column)])
                 word[0] = ""
                 return state_start(symbol, word, row, column)
+
+        def state_and_not_sure(symbol, word, row, column):
+            if symbol == "&":
+                return state_and
+            else:
+                if dictionary.get(word[0], False):
+                    self.list.append([word[0], WORD_TO_TYPE_DELIMER + dictionary[word[0]], ROW_NAME + str(row) + ROW_COL_DIVIDER_NAME + COLUMN_NAME + str(column)])
+                word[0] = ""
+                return state_error(symbol, word, row, column)
+
+        def state_and(symbol, word, row, column):
+            if dictionary.get(word[0], False):
+                self.list.append([word[0], WORD_TO_TYPE_DELIMER + dictionary[word[0]], ROW_NAME + str(row) + ROW_COL_DIVIDER_NAME + COLUMN_NAME + str(column)])
+            word[0] = ""
+            return state_start(symbol, word, row, column)
+
+        def state_or_not_sure(symbol, word, row, column):
+            if symbol == "|":
+                return state_or
+            else:
+                if dictionary.get(word[0], False):
+                    self.list.append([word[0], WORD_TO_TYPE_DELIMER + dictionary[word[0]], ROW_NAME + str(row) + ROW_COL_DIVIDER_NAME + COLUMN_NAME + str(column)])
+                word[0] = ""
+                return state_error(symbol, word, row, column)
+
+        def state_or(symbol, word, row, column):
+            if dictionary.get(word[0], False):
+                self.list.append([word[0], WORD_TO_TYPE_DELIMER + dictionary[word[0]], ROW_NAME + str(row) + ROW_COL_DIVIDER_NAME + COLUMN_NAME + str(column)])
+            word[0] = ""
+            return state_start(symbol, word, row, column)
         
         def state_start(symbol, word, row, column):
             if symbol in LETTERS:
@@ -211,6 +242,10 @@ class Lexer(object):
                 return state_any_number
             elif symbol == ".":
                 return state_undefined_float
+            elif symbol == "&":
+                return state_and_not_sure
+            elif symbol == "|":
+                return state_or_not_sure
             else:
                 return state_error
             
@@ -223,8 +258,8 @@ class Lexer(object):
         state = state_start
         word = [""]
     
-        row = 0
-        column = -1
+        row = 1
+        column = 0
         last_symbol = ""
         for i in self.text:
             new_state = state(i, word, row, column)
@@ -238,7 +273,7 @@ class Lexer(object):
             
             if last_symbol == "\n":
                 row = row + 1
-                column = 0
+                column = 1
             else:
                 column = column + 1
                 

@@ -113,6 +113,24 @@ class Test_RemoveLeftRecursion(unittest.TestCase):
         actual = RemoveLeftRecursion(testing, "LR")
         self.assertEqual(expected, actual, "RemoveLeftRecursion cant do simple recursion")
 
+
+    def test_some_shit_here(self):
+        testing = [
+            ["EXPRESSION_Z", ["EXPRESSION_Z plus_symbol EXPRESSION_Z"]],
+            ["EXPRESSION_Z", ["ANY_NUMBER"]],
+        ]
+
+        expected = [
+            ["A", ["b B LR1"]],
+            ["LR1", ["b LR1"]],
+            ["LR1", ["e"]],
+            ["B", ["b A", "b B"]],
+            ["C", ["b A", "b B"]]
+        ]
+
+        actual = RemoveLeftRecursion(testing, "LR")
+        print("changed")
+        self.assertEqual(expected, actual, "RemoveLeftRecursion cant do simple recursion")
    
 
 if __name__ == '__main__':

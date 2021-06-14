@@ -2,15 +2,16 @@
 from SLR1 import *
 
 RULES = [
-    ["Z", ["S $"]],
-    ["S", ["( S )"]],
-    ["S", ["e"]]
+    ["Z", ["E $"]],
+    ["E", ["E + E"]],
+    ["E", ["i"]]
     ]
 
 print(First(RULES))
 print(Follow(RULES))
 #
 Print_2D_Table(SLR_Table(RULES))
+CheckIfItSLR(SLR_Table(RULES))
 Runner(SLR_Table(RULES), "( ( ) ) $", RULES)
 print()
 print("///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////")

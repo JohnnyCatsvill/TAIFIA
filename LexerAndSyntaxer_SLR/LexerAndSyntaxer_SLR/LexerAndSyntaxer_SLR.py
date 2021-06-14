@@ -1,53 +1,31 @@
 
 from Lexer import Lexer
-from SLR1 import SLR_Table
+from SLR1 import SLR_Table, CheckIfItSLR
 from Runner import Runner
+from TablePrinter import Print_2D_Table
 
-program_text = """
-
-void main()
-{
-    int i;    //init
-    float f;
-    string s;
-    bool b;
+def L_AND_S(rules, text):
+    try:
+        lex = Lexer(program_text)
+        lex.run(show_states = False, show_spaces = False)
+        #lex.show()
     
-    hex h;
-    oct o;
-    bin bit;
-    fixed fix;
+        table = SLR_Table(rules)
+        #Print_2D_Table(table)
+        CheckIfItSLR(table)
+        
+        lexer_list = [i for i in lex.list if i[1] != "new_line" and i[1] != "Comment"]
+        lexer_list.append(["true_end", "$", "end_end"])
     
-    read(s);   //read write
-    print( s );
+        Runner(table, lexer_list, rules)
     
-    i = 06;    //assign
-    i =0x7;
-    i= 0b01;
-    i=6;
-    f = 0.50;
-    
-    if(i == 6  or i==5 and i!= 6 and i<=5)  //condition
-    {
-        i = 5;
-    }
-    else /* I want multicomment here
-    and noone can stop me 
-    do this */
-    {
-        i = 6;
-    }
-    
-    while(i < 10) //cycle
-    {
-        i = ((-i) + (1));
-    }
-}
-
-"""
-
-lex = Lexer(program_text)
-lex.run(show_states = False, show_spaces = False)
-#lex.show()
+    except Exception as e:
+        print("Не подходит")
+        print(e)
+        return False
+    else:
+        print("Подходит")
+        return True
 
 
 rules = [
@@ -57,45 +35,44 @@ rules = [
     ["LIST_OF_COMMANDS", ["COMMAND"]],
     
     ["COMMAND", ["type ID divider"]],
-    
     ["COMMAND", ["reader bracket_smooth_l ID bracket_smooth_r divider"]],
     ["COMMAND", ["printer bracket_smooth_l ID bracket_smooth_r divider"]],
-
     ["COMMAND", ["ID assign EXPRESSION divider"]],
+    ["COMMAND", ["condition bracket_smooth_l CONDITION bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
+    ["COMMAND", ["condition bracket_smooth_l CONDITION bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r condition_else bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
+    ["COMMAND", ["cycle bracket_smooth_l CONDITION bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
     
-    ["COMMAND", ["condition bracket_smooth_l CONDITION_LIST bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
-    ["COMMAND", ["condition bracket_smooth_l CONDITION_LIST bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r condition_else bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
-    
-    ["CONDITION_LIST", ["bracket_smooth_l CONDITION_LIST bracket_smooth_r binary_bool bracket_smooth_l CONDITION_LIST bracket_smooth_r"]],
-    ["CONDITION_LIST", ["CONDITION_LIST binary_bool CONDITION_LIST"]],
-    ["CONDITION_LIST", ["unary_bool CONDITION_LIST"]],
-    ["CONDITION_LIST", ["unary_bool bracket_smooth_l CONDITION_LIST bracket_smooth_r"]],
-    ["CONDITION_LIST", ["ID"]],
-    ["CONDITION_LIST", ["INT"]],
-    ["CONDITION_LIST", ["OCT"]],
-    ["CONDITION_LIST", ["HEX"]],
-    ["CONDITION_LIST", ["BIN"]],
-    ["CONDITION_LIST", ["FLOAT"]],
-    
-    ["COMMAND", ["cycle bracket_smooth_l CONDITION_LIST bracket_smooth_r bracket_curve_l LIST_OF_COMMANDS bracket_curve_r"]],
-
-    ["ANY_NUMBER", ["INT"]],
     ["ANY_NUMBER", ["OCT"]],
     ["ANY_NUMBER", ["HEX"]],
     ["ANY_NUMBER", ["BIN"]],
     ["ANY_NUMBER", ["FLOAT"]],
     ["ANY_NUMBER", ["ID"]],
+    ["ANY_NUMBER", ["INT"]],
 
-    ["EXPRESSION", ["EXPRESSION math_symbol EXPRESSION"]],
-    ["EXPRESSION", ["bracket_smooth_l EXPRESSION bracket_smooth_r"]],
-    #["EXPRESSION", ["bracket_smooth_l EXPRESSION bracket_smooth_r math_symbol bracket_smooth_l EXPRESSION bracket_smooth_r"]],
-    ["EXPRESSION", ["ANY_NUMBER"]],
-    ["EXPRESSION", ["math_symbol ANY_NUMBER"]]  
+    ["EXPRESSION", ["EXPRESSION plus_symbol EXPRESSION2"]],
+    ["EXPRESSION", ["EXPRESSION minus_symbol EXPRESSION2"]],
+    ["EXPRESSION", ["EXPRESSION2"]],
+
+    ["EXPRESSION2", ["EXPRESSION2 multiply_symbol EXPRESSION3"]],
+    ["EXPRESSION2", ["EXPRESSION2 divide_symbol EXPRESSION3"]],
+    ["EXPRESSION2", ["EXPRESSION3"]],
+
+    ["EXPRESSION3", ["bracket_smooth_l EXPRESSION bracket_smooth_r"]],
+    ["EXPRESSION3", ["minus_symbol EXPRESSION3"]],
+    ["EXPRESSION3", ["ANY_NUMBER"]],
+
+    ["CONDITION", ["CONDITION binary_or CONDITION2"]],
+    ["CONDITION", ["CONDITION2"]],
+
+    ["CONDITION2", ["CONDITION2 binary_and CONDITION3"]],
+    ["CONDITION2", ["CONDITION3"]],
+
+    ["CONDITION3", ["bracket_smooth_l CONDITION bracket_smooth_r"]],
+    ["CONDITION3", ["unary_not CONDITION3"]],
+    ["CONDITION3", ["boolean_true"]],
+    ["CONDITION3", ["boolean_false"]],
+    ["CONDITION3", ["ANY_NUMBER binary_compare ANY_NUMBER"]]
 ]
 
-table = SLR_Table(rules)
-
-lexer_list = [i for i in lex.list if i[1] != "new_line" and i[1] != "Comment"]
-lexer_list.append(["true_end", "$", "end_end"])
-
-Runner(table, lexer_list, rules)
+program_text = open("program.txt", "r").read()
+L_AND_S(rules, program_text)
