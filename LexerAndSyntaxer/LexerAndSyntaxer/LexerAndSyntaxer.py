@@ -102,26 +102,29 @@ rules = [
     ["CONDITION3", ["ANY_NUMBER binary_compare ANY_NUMBER"]]
 ]
 
-try:
-    lex = Lexer(program_text)
-    lex.run(show_states = False, show_spaces = False)
-    lex.show()
+def L_AND_S(rules, text):
+    try:
+        lex = Lexer(text)
+        lex.run(show_states = False, show_spaces = False)
+        #lex.show()
+    
+        table = Run(rules, lr_letter="LR", ft_letter="FR", word = "", show_all = False)
+        
+        runner = Runner_cl(1, table, "$")
+        
+        for i in lex.list:
+            if i[1] != "new_line" and i[1] != "Comment":
+                runner.Run(i[1], i[2])
+                #print(runner.pos_stack)
+        
+        is_end = runner.Run("$", "end_end")
+        if not is_end:
+            raise Exception("Промахнулись с концом", runner.current_pos, runner.pos_stack)
+    
+    except Exception as e:
+        print("Не подходит")
+        print(e)
+    else:
+        print("Подходит")
 
-    table = Run(rules, lr_letter="LR", ft_letter="FR", word = "", show_all = False)
-    
-    runner = Runner_cl(1, table, "$")
-    
-    for i in lex.list:
-        if i[1] != "new_line" and i[1] != "Comment":
-            runner.Run(i[1], i[2])
-            print(runner.pos_stack)
-    
-    is_end = runner.Run("$", "end_end")
-    if not is_end:
-        raise Exception("Промахнулись с концом", runner.current_pos, runner.pos_stack)
-
-except Exception as e:
-    print("Не подходит")
-    print(e)
-else:
-    print("Подходит")
+L_AND_S(rules, program_text)

@@ -6,7 +6,7 @@ from TablePrinter import Print_2D_Table
 
 def L_AND_S(rules, text):
     try:
-        lex = Lexer(program_text)
+        lex = Lexer(text)
         lex.run(show_states = False, show_spaces = False)
         #lex.show()
     

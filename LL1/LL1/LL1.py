@@ -395,6 +395,7 @@ def Run(rules, lr_letter, ft_letter, word = "", show_all = False):
 
     ready_table = CreateTable(sorted_table)
 
-    Print_2D_Table(ready_table, "[]'")
+    if show_all: 
+        Print_2D_Table(ready_table, "[]'")
 
     return ready_table
