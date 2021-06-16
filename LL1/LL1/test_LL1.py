@@ -131,6 +131,19 @@ class Test_RemoveLeftRecursion(unittest.TestCase):
         actual = RemoveLeftRecursion(testing, "LR")
         print("changed")
         self.assertEqual(expected, actual, "RemoveLeftRecursion cant do simple recursion")
+
+    def test_shitty_stuff(self):
+        testing = [
+            ["A", ["( A )"]],
+            ["A", ["a"]]
+        ]
+
+        expected = [
+            ["A", ["( A )", "a"]]
+        ]
+
+        actual = RemoveLeftRecursion(testing, "LR")
+        self.assertEqual(expected, actual, "RemoveLeftRecursion processed non recursive rules")
    
 
 if __name__ == '__main__':

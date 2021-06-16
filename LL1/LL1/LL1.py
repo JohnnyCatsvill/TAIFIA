@@ -45,8 +45,8 @@ def RemoveLeftRecursion(unfixed_rules, new_letter):
         
         for rule in rule_pack[1]: #поиск рекурсии
             
-            if current_nonterminal in ParseRule(rule):
-                recursive_rules.append(rule)
+            if current_nonterminal == ParseRule(rule)[0]: # раньше было if current_nonterminal in ParseRule(rule)
+                recursive_rules.append(rule)                # а еще раньше было if rule.find(current_nonterminal) == 0
             else:
                 non_recursive_rules.append(rule)
               
